@@ -23,6 +23,20 @@
             background-color: var(--darker-bg);
             color: white;
             line-height: 1.6;
+            position: relative;
+        }
+        
+        /* Logo Background */
+        .logo-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+            z-index: -1;
+            max-width: 60%;
+            max-height: 60%;
+            pointer-events: none;
         }
         
         /* Navigation with Flame Effect */
@@ -216,6 +230,7 @@
             padding: 5rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
         }
         
         .section:nth-child(even) {
@@ -296,6 +311,9 @@
     </style>
 </head>
 <body>
+    <!-- Logo Background -->
+    <img src="https://via.placeholder.com/800x800" alt="Forex Mastery Academy Logo" class="logo-bg" id="logo-bg">
+
     <!-- Navigation -->
     <div class="nav-container">
         <nav>
@@ -579,6 +597,13 @@
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
+        });
+
+        // Load your actual logo (replace placeholder)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace this with your actual logo URL
+            const logoUrl = 'YOUR_LOGO_URL_HERE';
+            document.getElementById('logo-bg').src = logoUrl;
         });
     </script>
 </body>
