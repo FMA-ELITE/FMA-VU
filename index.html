@@ -472,7 +472,48 @@
 <div style="color: #4CAF50; font-weight: bold; margin: 1rem 0; text-align: center;">
     SAVE UP TO 58% - LIMITED TIME OFFER!
 </div>
-<!-- COPY TO HERE -->
+
+<!-- Countdown Timer - COPY FROM HERE -->
+<div style="text-align: center; margin: 1.5rem 0; padding: 1rem; background: rgba(0, 245, 255, 0.1); border-radius: 8px; border: 1px solid var(--flame-blue);">
+    <h3 style="margin-bottom: 0.5rem; color: var(--flame-light);">OFFER ENDS IN:</h3>
+    <div id="countdown" style="font-size: 1.8rem; font-weight: bold; font-family: monospace;">
+        <span id="days">07</span>d : 
+        <span id="hours">23</span>h : 
+        <span id="minutes">59</span>m : 
+        <span id="seconds">59</span>s
+    </div>
+    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #aaa;">Hurry! Prices increase after timer ends</p>
+</div>
+
+<script>
+    // Set the date we're counting down to (1 week from now)
+    const countDownDate = new Date();
+    countDownDate.setDate(countDownDate.getDate() + 7);
+
+    // Update the countdown every 1 second
+    const countdownTimer = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+        
+        // Time calculations
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        // Display results
+        document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+        document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
+        document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+        document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+        
+        // If countdown is finished
+        if (distance < 0) {
+            clearInterval(countdownTimer);
+            document.getElementById("countdown").innerHTML = "OFFER EXPIRED!";
+        }
+    }, 1000);
+</script>
         
         <div class="payment-buttons">
             <a href="https://selar.com/q7v1sg" class="payment-button vu">
