@@ -1,5 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<!-- Add these meta tags for security -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'">
+
+<!-- Add this script to prevent form spam -->
+<script>
+// Simple anti-spam - limits to 1 submission every 2 minutes
+const reviewForm = document.getElementById('instantReviewForm');
+let lastSubmission = 0;
+
+reviewForm.addEventListener('submit', function(e) {
+    const now = Date.now();
+    if(now - lastSubmission < 120000) { // 2 minutes
+        e.preventDefault();
+        alert('Please wait 2 minutes between submissions.');
+        return;
+    }
+    lastSubmission = now;
+});
+</script>
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -602,6 +624,39 @@
         </a>
     </div>
 </section>
+
+    <section id="live-reviews" class="section" style="background: var(--content-bg);">
+    <h2 class="section-title">Live Trader Success Stories</h2>
+    
+    <!-- Review Form -->
+    <div style="max-width: 600px; margin: 2rem auto; background: var(--dark-bg); padding: 2rem; border-radius: 8px;">
+        <h3 style="color: var(--flame-light); margin-bottom: 1rem;">Share Your Win</h3>
+        <form id="instantReviewForm">
+            <input type="text" id="reviewName" placeholder="Your Name (Optional)" style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid var(--flame-blue); background: rgba(0,0,0,0.2); color: white;">
+            
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <span onclick="rate(1)" style="cursor: pointer; font-size: 1.5rem; color: gold;">☆</span>
+                <span onclick="rate(2)" style="cursor: pointer; font-size: 1.5rem; color: gold;">☆</span>
+                <span onclick="rate(3)" style="cursor: pointer; font-size: 1.5rem; color: gold;">☆</span>
+                <span onclick="rate(4)" style="cursor: pointer; font-size: 1.5rem; color: gold;">☆</span>
+                <span onclick="rate(5)" style="cursor: pointer; font-size: 1.5rem; color: gold;">☆</span>
+            </div>
+            <input type="hidden" id="userRating" value="0">
+            
+            <textarea id="reviewContent" placeholder="Your trading win (e.g. 'Passed $50K challenge in 2 weeks!')" required style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid var(--flame-blue); background: rgba(0,0,0,0.2); color: white; min-height: 100px;"></textarea>
+            
+            <input type="file" id="screenshotUpload" accept="image/*" style="width: 100%; margin-bottom: 1rem;">
+            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 1rem;">Max 1MB - Blur sensitive account info</p>
+            
+            <button type="submit" class="cta-button" style="width: 100%; padding: 0.75rem;">Post Review Instantly</button>
+        </form>
+    </div>
+    
+    <!-- Live Reviews Container -->
+    <div id="reviewsContainer" style="max-width: 800px; margin: 0 auto;">
+        <!-- Reviews will appear here automatically -->
+    </div>
+</section>
     
     <!-- Footer -->
     <footer>
@@ -766,6 +821,97 @@ html {
         <path fill="white" d="M9.78 18.65l.28-4.23l7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3L3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
     </svg>
 </a>
+
+    <script>
+// Simple in-memory storage (for demo - replace with localStorage for persistence)
+let allReviews = [];
+
+// Rating System
+function rate(stars) {
+    const starElements = document.querySelectorAll('#instantReviewForm span');
+    starElements.forEach((star, index) => {
+        star.textContent = index < stars ? '★' : '☆';
+    });
+    document.getElementById('userRating').value = stars;
+}
+
+// Form Submission
+document.getElementById('instantReviewForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('reviewName').value || "Anonymous Trader";
+    const rating = document.getElementById('userRating').value;
+    const content = document.getElementById('reviewContent').value;
+    const fileInput = document.getElementById('screenshotUpload');
+    
+    // Basic validation
+    if(!content) {
+        alert("Please share your trading experience!");
+        return;
+    }
+    
+    // Create review object
+    const review = {
+        name,
+        rating,
+        content,
+        date: new Date().toLocaleDateString(),
+        screenshot: null
+    };
+    
+    // Handle image upload
+    if(fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            review.screenshot = e.target.result;
+            addReviewToPage(review);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else {
+        addReviewToPage(review);
+    }
+    
+    // Reset form
+    this.reset();
+    document.querySelectorAll('#instantReviewForm span').forEach(s => s.textContent = '☆');
+});
+
+// Display New Review
+function addReviewToPage(review) {
+    allReviews.unshift(review); // Add to beginning
+    renderReviews();
+}
+
+// Render All Reviews
+function renderReviews() {
+    const container = document.getElementById('reviewsContainer');
+    container.innerHTML = '';
+    
+    allReviews.forEach(review => {
+        const reviewHTML = `
+        <div class="review-card" style="background: var(--dark-bg); padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; border-left: 3px solid var(--flame-blue);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <h4 style="margin: 0; color: var(--flame-light);">${review.name}</h4>
+                <div style="color: gold;">
+                    ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
+                </div>
+            </div>
+            <p style="margin: 0.5rem 0;">${review.content}</p>
+            ${review.screenshot ? `<img src="${review.screenshot}" alt="Trading proof" style="max-width: 100%; max-height: 200px; border-radius: 4px; margin-top: 1rem; border: 1px solid var(--flame-blue);">` : ''}
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #aaa;">Posted ${review.date}</p>
+        </div>
+        `;
+        container.insertAdjacentHTML('afterbegin', reviewHTML);
+    });
+}
+
+// Optional: Load saved reviews on page load
+window.addEventListener('DOMContentLoaded', () => {
+    // For persistence, use localStorage instead:
+    // allReviews = JSON.parse(localStorage.getItem('forexReviews')) || [];
+    renderReviews();
+});
+</script>
     
 </body>
 </html>
