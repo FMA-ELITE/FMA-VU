@@ -1,27 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Add these meta tags for security -->
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'">
-
-<!-- Add this script to prevent form spam -->
-<script>
-// Simple anti-spam - limits to 1 submission every 2 minutes
-const reviewForm = document.getElementById('instantReviewForm');
-let lastSubmission = 0;
-
-reviewForm.addEventListener('submit', function(e) {
-    const now = Date.now();
-    if(now - lastSubmission < 120000) { // 2 minutes
-        e.preventDefault();
-        alert('Please wait 2 minutes between submissions.');
-        return;
-    }
-    lastSubmission = now;
-});
-</script>
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
