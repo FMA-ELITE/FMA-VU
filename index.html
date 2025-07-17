@@ -27,17 +27,19 @@
         }
         
         /* Logo Background */
-        .logo-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.05;
-            z-index: -1;
-            max-width: 60%;
-            max-height: 60%;
-            pointer-events: none;
-        }
+       .logo-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.1; /* Increased from 0.05 for better visibility */
+    z-index: -1;
+    max-width: 60%;
+    max-height: 60%;
+    pointer-events: none;
+    display: block !important; /* Force display */
+    background-color: transparent !important; /* Ensure no background */
+}
         
         /* Navigation with Flame Effect */
         .nav-container {
@@ -312,7 +314,7 @@
 </head>
 <body>
     <!-- Logo Background -->
-    <img src="fma-logo.jpg" alt="fma-logo.jpg" class="logo-bg" id="logo-bg">
+    <img src="./fma-logo.jpg" alt="Forex Mastery Academy Logo" class="logo-bg" id="logo-bg">
 
     <!-- Navigation -->
     <div class="nav-container">
@@ -849,4 +851,26 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
     
 </body>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const logo = document.getElementById('logo-bg');
+    
+    // Verify image loaded
+    logo.onload = function() {
+        console.log('Logo loaded successfully');
+    };
+    
+    logo.onerror = function() {
+        console.error('Logo failed to load');
+        // You could set a fallback background color here
+        document.body.style.background = "linear-gradient(to bottom, var(--dark-bg), var(--darker-bg))";
+    };
+    
+    // Optional: Fade in effect
+    setTimeout(() => {
+        logo.style.transition = 'opacity 1s ease';
+        logo.style.opacity = '0.1';
+    }, 500);
+});
+</script>
 </html>
